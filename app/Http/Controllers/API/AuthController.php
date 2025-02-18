@@ -28,13 +28,13 @@ class AuthController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return $this->sendError('Validation Error.', $validator->errors());
         }
 
         if (User::where('username', $request->username)->exists()) {
-            return $this->sendError('Validation Error.', ['username' => 'Username already exists']);
+            return $this->sendError('Validation Error.', 'Username already exists');
         } elseif (User::where('email', $request->email)->exists()) {
-            return $this->sendError('Validation Error.', ['email' => 'Email already exists']);
+            return $this->sendError('Validation Error.', 'Email already exists');
         }
 
         $input = $request->all();
@@ -59,7 +59,7 @@ class AuthController extends BaseController
 
             return $this->sendResponse($success, 'User login successfully.');
         } else {
-            return response()->json(['error' => 'Wrong username or password!'], 401);
+            return $this->sendError('Unauthorized.', 'Wrong username or password');
         }
     }
 }
